@@ -11,18 +11,36 @@
 <h1 class="page-title">62's Fuel Calculator</h1>
 
 <div class="login-wrapper">
-  <form class="login-form" action="" method="post">
+  <form class="login-form" id="login-form" action="" method="post">
     <h2>Login</h2>
     <div class="input-box">
-      <input type="text" placeholder="Username" required>
+      <input type="text" id="username" placeholder="Username" required> 
     </div>
     <div class="input-box">
-      <input type="password" placeholder="Password" required>
+      <input type="password" id="password" placeholder="Password" required> 
     </div>
     <button type="submit" class="btn">Login</button>
   </form>
   <p class="registration-link">Need to register? <a href="register.html">click here</a></p>
 </div>
+
+<script>
+document.getElementById("login-form").addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevent form submission
+
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
+
+  // Simulated user authentication (replace with your logic)
+  if (username === "user" && password === "pass") {
+    alert("Login successful!");
+    // Redirect to form.html
+    window.location.href = "form.html"; 
+  } else {
+    alert("Invalid username or password. Please try again.");
+  }
+});
+</script>
 
 </body>
 </html>
