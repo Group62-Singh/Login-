@@ -26,6 +26,22 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 350px;
   }
+
+  .form-wrapper {
+    background-color: #fff;
+    padding: 60px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 350px;
+  }
+
+  .quote-wrapper {
+    background-color: #fff;
+    padding: 60px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+  }
   
   .input-box {
     margin-bottom: 20px;
@@ -71,4 +87,17 @@ body {
   .registration-link a:hover {
     text-decoration: underline; 
   }
+
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
   
