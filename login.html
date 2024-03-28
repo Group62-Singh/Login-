@@ -11,13 +11,15 @@
 <h1 class="page-title">62's Fuel Calculator</h1>
 
 <div class="login-wrapper">
-  <form class="login-form" id="login-form" action="" method="post">
+  <form class="login-form" id="login-form" action="/login" method="post"> <!-- Updated action attribute -->
     <h2>Login</h2>
     <div class="input-box">
-      <input type="text" id="username" placeholder="Username" required> 
+      <input type="text" id="username" name="username" placeholder="Username" maxlength="20" required> <!-- Added maxlength attribute -->
+      <span class="error" id="username-error"></span> <!-- Error message for username -->
     </div>
     <div class="input-box">
-      <input type="password" id="password" placeholder="Password" required> 
+      <input type="password" id="password" name="password" placeholder="Password" required> <!-- Added name attribute -->
+      <span class="error" id="password-error"></span> <!-- Error message for password -->
     </div>
     <button type="submit" class="btn">Login</button>
   </form>
@@ -31,14 +33,32 @@ document.getElementById("login-form").addEventListener("submit", function(event)
   var username = document.getElementById("username").value;
   var password = document.getElementById("password").value;
 
-  // Simulated user authentication (replace with your logic)
-  if (username === "user" && password === "pass") {
-    alert("Login successful!");
-    // Redirect to form.html
-    window.location.href = "form.html"; 
+  // Validate username
+  var usernameError = document.getElementById("username-error");
+  if (username.length > 20) {
+    usernameError.textContent = "Username is too long";
+    return;
   } else {
-    alert("Invalid username or password. Please try again.");
+    usernameError.textContent = "";
   }
+
+  // Validate password
+  var passwordError = document.getElementById("password-error");
+  if (password.length < 5) {
+    passwordError.textContent = "Password must be at least 5 characters long";
+    return;
+  } else if (!/[A-Z]/.test(password)) {
+    passwordError.textContent = "Password must contain at least one capital letter";
+    return;
+  } else if (!/[^a-zA-Z0-9]/.test(password)) {
+    passwordError.textContent = "Password must contain at least one special character";
+    return;
+  } else {
+    passwordError.textContent = "";
+  }
+
+  // If validation passes, submit the form
+  this.submit();
 });
 </script>
 
