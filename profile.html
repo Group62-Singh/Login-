@@ -16,7 +16,7 @@
 <h1 class="page-title">Profile</h1>
 
 <div class="login-wrapper">
-  <form id="profile-form" class="profile-form" action="" method="post">
+  <form id="profile-form" class="profile-form" action="/client/profiles" method="post">
     <div class="input-box">
       <label for="fullname">Full Name:</label>
       <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" maxlength="50" required>
@@ -37,6 +37,7 @@
     <div class="input-box">
       <label for="state">State:</label>
       <select id="state" name="state" required>
+        <option value="">Select State</option>
         <option value="">Select State</option>
         <option value="AL">Alabama</option>
         <option value="AK">Alaska</option>
@@ -102,12 +103,42 @@
 
 <script>
   document.getElementById("profile-form").addEventListener("submit", function(event) {
-    event.preventDefault(); 
-    alert("Profile submitted successfully!");
+    event.preventDefault(); // Prevent the default form submission
+
+    // Collect form data
+    const formData = new FormData(document.getElementById("profile-form"));
+    
+    // Convert form data to JSON object
+    const jsonData = {};
+    formData.forEach((value, key) => {
+      jsonData[key] = value;
+    });
+
+    // Send form data to the server
+    fetch("/client/profiles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert("Profile submitted successfully!");
+      // Optionally, handle the response from the server
+      console.log(data);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("An error occurred while submitting the profile. Please try again.");
+    });
   });
 </script>
 
 </body>
 </html>
-
-
