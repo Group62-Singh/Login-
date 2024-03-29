@@ -139,6 +139,39 @@ app.post('/fuel/quotes', (req, res) => {
     res.status(201).json({ message: 'Fuel quote created successfully' });
 });
 
+// Route to handle registration form submission
+app.post('/register', (req, res) => {
+    const { username, password, confirmPassword } = req.body;
+
+    // Validate username
+    if (!username || typeof username !== 'string') {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+    // Validate password
+    if (!password || typeof password !== 'string' || password.length < 5) {
+        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
+    }
+
+    // Validate confirmPassword
+    if (!confirmPassword || confirmPassword !== password) {
+        return res.status(400).json({ error: 'Passwords do not match' });
+    }
+
+    // Check if username already exists
+    if (users.some(user => user.username === username)) {
+        return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    // Add new user to the list
+    const newUser = { username, password };
+    users.push(newUser);
+
+    // Respond with success message
+    res.status(201).json({ message: 'User registered successfully', user: newUser });
+});
+
+
 // Placeholder function for generating authentication token
 function generateAuthToken(user) {
     return 'placeholder-token';
