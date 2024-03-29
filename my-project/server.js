@@ -87,32 +87,14 @@ app.get('/client/profiles', (req, res) => {
     res.json(clientProfiles);
 });
 
+// Client profile management route handler
 app.post('/client/profiles', (req, res) => {
-    // Extract profile data from request body
-    const { full_name, address1, address2, city, state, zipcode } = req.body;
+    // Extract profile data from the request body
+    const { fullname, address1, address2, city, state, zipcode } = req.body;
 
-    // Validate profile data
-    const validationErrors = validateClientProfile({ full_name, address1, city, state, zipcode });
-    if (validationErrors.length > 0) {
-        return res.status(400).json({ errors: validationErrors });
-    }
-
-    // Create a new client profile object
-    const newProfile = {
-        id: clientProfiles.length + 1,
-        full_name,
-        address1,
-        address2,
-        city,
-        state,
-        zipcode
-    };
-
-    // Add the new profile to the clientProfiles array
-    clientProfiles.push(newProfile);
-
-    // Respond with success message
-    res.status(201).json({ message: 'Client profile created successfully', profile: newProfile });
+    // Perform validation, save to database, etc.
+    // For now, just send back a success response
+    res.status(200).json({ message: 'Profile submitted successfully', profile: req.body });
 });
 
 // Placeholder function for client profile validation

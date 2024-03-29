@@ -27,39 +27,42 @@
 </div>
 
 <script>
-document.getElementById("login-form").addEventListener("submit", function(event) {
-  event.preventDefault(); // Prevent form submission
+  document.getElementById("profile-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-  var username = document.getElementById("username").value;
-  var password = document.getElementById("password").value;
+    // Collect form data
+    const formData = new FormData(document.getElementById("profile-form"));
+    
+    // Convert form data to JSON object
+    const jsonData = {};
+    formData.forEach((value, key) => {
+      jsonData[key] = value;
+    });
 
-  // Validate username
-  var usernameError = document.getElementById("username-error");
-  if (username.length > 20) {
-    usernameError.textContent = "Username is too long";
-    return;
-  } else {
-    usernameError.textContent = "";
-  }
-
-  // Validate password
-  var passwordError = document.getElementById("password-error");
-  if (password.length < 5) {
-    passwordError.textContent = "Password must be at least 5 characters long";
-    return;
-  } else if (!/[A-Z]/.test(password)) {
-    passwordError.textContent = "Password must contain at least one capital letter";
-    return;
-  } else if (!/[^a-zA-Z0-9]/.test(password)) {
-    passwordError.textContent = "Password must contain at least one special character";
-    return;
-  } else {
-    passwordError.textContent = "";
-  }
-
-  // If validation passes, submit the form
-  this.submit();
-});
+    // Send form data to the server
+    fetch("/client/profiles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert("Profile submitted successfully!");
+      // Optionally, handle the response from the server
+      console.log(data);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("An error occurred while submitting the profile. Please try again.");
+    });
+  });
 </script>
 
 </body>
