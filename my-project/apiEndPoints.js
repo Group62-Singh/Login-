@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Placeholder data (in-memory)
+// Placeholder data
 let fuelQuotes = [];
 let fuelQuoteHistory = [];
 let clientProfiles = [];
@@ -42,8 +42,8 @@ router.post('/client/profiles', (req, res) => {
     // Extract profile data from the request body
     const { fullname, address1, address2, city, state, zipcode } = req.body;
 
-    // Perform validation, save to database, etc.
-    // For now, just send back a success response
+    // Perform validation, save to database
+    // Success response sent as test
     res.status(200).json({ message: 'Profile submitted successfully', profile: req.body });
 });
 
@@ -71,7 +71,7 @@ router.post('/login', (req, res) => {
         return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // Placeholder token generation (for future use)
+    // Placeholder token generation 
     const token = generateAuthToken(user);
 
     res.json({ token });
@@ -116,14 +116,12 @@ function generateAuthToken(user) {
 
 // Placeholder function for fuel quote validation
 function validateFuelQuote(quoteData) {
-    // Implement validation logic
     // Validate required fields, field types, and field lengths
     let errors = [];
-    // Example validation
     if (!quoteData.gallons_requested || typeof quoteData.gallons_requested !== 'number' || quoteData.gallons_requested <= 0) {
         errors.push('Gallons requested is required and must be a positive number');
     }
-    // Add more validations as needed
+    
     return errors;
 }
 
