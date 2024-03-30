@@ -46,7 +46,11 @@ let users = [
     { id: 2, username: 'user2', password: 'password2' }
 ];
 
+// Import FuelPricing class
+const FuelPricing = require('my-project/FuelPricing');
 
+// Create instance of FuelPricing
+const fuelPricing = new FuelPricing();
 
 
 // Login route with backend validation
@@ -197,7 +201,6 @@ function validateClientProfile(profileData) {
     if (!profileData.full_name || typeof profileData.full_name !== 'string' || profileData.full_name.length > 50) {
         errors.push('Full name is required and must be a string with maximum length of 50 characters');
     }
-    // Add more validations as needed
     return errors;
 }
 
@@ -210,7 +213,6 @@ function validateFuelQuote(quoteData) {
     if (!quoteData.gallons_requested || typeof quoteData.gallons_requested !== 'number' || quoteData.gallons_requested <= 0) {
         errors.push('Gallons requested is required and must be a positive number');
     }
-    // Add more validations as needed
     return errors;
 }
 
