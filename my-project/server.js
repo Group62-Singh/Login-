@@ -11,8 +11,6 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Placeholder data (in-memory)
-let clientProfiles = [];
 
 // Middleware for parsing JSON data
 app.use(express.json());
@@ -48,7 +46,7 @@ let users = [
     { id: 2, username: 'user2', password: 'password2' }
 ];
 
-let fuelQuotes = [];
+
 
 
 // Login route with backend validation
@@ -81,7 +79,8 @@ app.post('/login', (req, res) => {
     res.json({ token });
 });
 
-
+// Placeholder data (in-memory)
+let clientProfiles = [];
 // Client profile management routes
 app.get('/client/profiles', (req, res) => {
     res.json(clientProfiles);
@@ -121,6 +120,18 @@ function validateClientProfile(profileData) {
     return errors;
 }
 
+
+let fuelQuoteHistory = [];
+
+// Route to fetch fuel quote history
+app.get('/fuel/quotes/history', (req, res) => {
+    // Will replace fuelQuoteHistory with database query 
+    res.json(fuelQuoteHistory);
+});
+
+
+// Temporary array until backend can be made
+let fuelQuotes = [];
 
 // Fuel quote module routes
 app.get('/fuel/quotes', (req, res) => {

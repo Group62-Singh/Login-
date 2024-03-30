@@ -15,36 +15,42 @@
     
     <h1>Fuel Quote History</h1>
     <div class="quote-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th>Gallons Requested</th>
-                <th>Delivery Address</th>
-                <th>Delivery Date</th>
-                <th>Suggested Price / gallon</th>
-                <th>Total Amount Due</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Example rows, replace with actual data from database -->
-            <tr>
-                <td>100</td>
-                <td>1234 Main St, Anytown, USA</td>
-                <td>2024-01-01</td>
-                <td>$2.50</td>
-                <td>$250.00</td>
-            </tr>
-            <tr>
-                <td>150</td>
-                <td>5678 Elm St, Othertown, USA</td>
-                <td>2024-01-15</td>
-                <td>$2.40</td>
-                <td>$360.00</td>
-            </tr>
-            <!-- Add more rows as needed -->
-        </tbody>
-    </table>
-</div>
-    
+        <table>
+            <thead>
+                <tr>
+                    <th>Gallons Requested</th>
+                    <th>Delivery Address</th>
+                    <th>Delivery Date</th>
+                    <th>Suggested Price / gallon</th>
+                    <th>Total Amount Due</th>
+                </tr>
+            </thead>
+            <tbody id="quote-table-body">
+                <!-- Quotes will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fetch fuel quote history from backend
+        fetch('/fuel/quotes/history')
+            .then(response => response.json())
+            .then(data => {
+                const quoteTableBody = document.getElementById('quote-table-body');
+                // Iterate over the fetched data and create table rows dynamically
+                data.forEach(quote => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${quote.gallons_requested}</td>
+                        <td>${quote.delivery_address}</td>
+                        <td>${quote.delivery_date}</td>
+                        <td>${quote.suggested_price}</td>
+                        <td>${quote.total_amount_due}</td>
+                    `;
+                    quoteTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching fuel quote history:', error));
+    </script>
 </body>
 </html>
