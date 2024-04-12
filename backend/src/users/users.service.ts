@@ -42,6 +42,7 @@ export class UsersService {
   }
 
   async setProfile(user: any, payload: UpdateProfileDto) {
+    this.logger.log(JSON.stringify(payload));
     const _user = await this.userRepository.findOne({
       where: { username: user.username },
       relations: ['profile'],

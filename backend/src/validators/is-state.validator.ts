@@ -1,4 +1,8 @@
-import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
+import {
+  registerDecorator,
+  ValidationOptions,
+  ValidationArguments,
+} from 'class-validator';
 import states from 'states-us';
 
 export function IsState(validationOptions?: ValidationOptions) {
@@ -11,7 +15,7 @@ export function IsState(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any, args: ValidationArguments) {
-            return states.some(state => state.abbreviation === value);
+          return !value || states.some((state) => state.abbreviation === value);
         },
       },
     });
