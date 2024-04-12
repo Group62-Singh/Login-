@@ -16,7 +16,7 @@ export class AuthService {
   async signIn(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
     if (!user || !bcrypt.compareSync(pass, user.password)) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('incorrect username or password');
     }
     const payload = { username: user.username, sub: user.id };
     return {

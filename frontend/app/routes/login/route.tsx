@@ -11,30 +11,49 @@ import {
   Button,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  redirect,
+} from "@remix-run/node";
 import { useFetcher, Form, Link } from "@remix-run/react";
 import { useEffect } from "react";
+import { getSession, commitSession } from "../../session.server";
+import { isAuthenticated } from "../../utils/isAuthenticated";
 
 type FormValues = {
   username: string;
   password: string;
 };
 
-export async function loader(args: LoaderFunctionArgs) {
-  return {};
+export async function loader({ request }: LoaderFunctionArgs) {
+  const auth = await isAuthenticated(request);
+  if (auth && auth.user) {
+    return redirect("/app");
+  }
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
   const payload = await request.json();
-  //console.log(payload.get('username'));
-  fetch("http://localhost:3000/login", {
+  const response = await fetch("http://localhost:3000/auth/login", {
     method: "post",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" },
   });
-
+  const result = await response.json();
+  if (response.status === 201) {
+    session.set("credentials", { accessToken: result.access_token });
+    return redirect("/app", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  }
   return {
-    status: 200,
+    message: result.message,
+    fields: ["username", "password"],
   };
 }
 
@@ -46,7 +65,7 @@ export default function Index() {
     },
   });
 
-  const fetcher = useFetcher<FormValues>();
+  const fetcher = useFetcher<typeof action>();
 
   const handleSubmit = (values: FormValues) => {
     fetcher.submit(values, {
@@ -55,10 +74,15 @@ export default function Index() {
     });
   };
 
-  // useEffect(() => {
-
-  // console.log(data);
-  // })
+  useEffect(() => {
+    if (fetcher.data && "message" in fetcher.data) {
+      form.clearErrors();
+      const { message, fields } = fetcher.data;
+      for (const field of fields) {
+        form.setFieldError(field, message);
+      }
+    }
+  });
 
   return (
     <Container size={420} my={40}>
@@ -70,7 +94,11 @@ export default function Index() {
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form method="post" onSubmit={form.onSubmit(handleSubmit)}>
+        <form
+          method="post"
+          encType="application/json"
+          onSubmit={form.onSubmit(handleSubmit)}
+        >
           <TextInput
             label="Username"
             placeholder="Username"

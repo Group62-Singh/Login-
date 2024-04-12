@@ -37,17 +37,20 @@ export async function action({ request }: ActionFunctionArgs) {
       fields: ["password", "repeatedPassword"],
     };
   }
-  const response = await fetch("http://localhost:3000/register", {
+  const response = await fetch("http://localhost:3000/auth/register", {
     method: "post",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" },
   });
-  const result = await response.json();
-  if (result.status === 201) {
-    return redirect("/login");
+  if (response.status === 201) {
+    return redirect("/login", {
+      status: 200,
+    });
   }
+  const result = await response.json();
   return {
-    status: 200,
+    message: result.message,
+    fields: ["username"],
   };
 }
 
@@ -70,6 +73,7 @@ export default function Index() {
   };
 
   useEffect(() => {
+    form.clearErrors();
     if (fetcher.data && "message" in fetcher.data) {
       const { message, fields } = fetcher.data;
       for (const field of fields) {
