@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Outlet, Link } from "@remix-run/react";
+import { Outlet, Link, useLocation } from "@remix-run/react";
 import {
   IconBarrel,
   IconFaceId,
@@ -54,16 +54,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  const [active, setActive] = useState("Profile");
+  const location = useLocation();
+  const [active, setActive] = useState(location.pathname);
 
   const links = data.map((item) => (
     <Link
       className={classes.link}
-      data-active={item.label === active || undefined}
+      data-active={item.link === active || undefined}
       to={item.link}
       key={item.label}
       onClick={(event) => {
-        setActive(item.label);
+        setActive(item.link);
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
@@ -95,11 +96,7 @@ export default function Index() {
                             <span>Change account</span>
                         </a> */}
 
-          <Link
-            to="/logout"
-            className={classes.link}
-            onClick={(event) => event.preventDefault()}
-          >
+          <Link to="/logout" className={classes.link}>
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Logout</span>
           </Link>

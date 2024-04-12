@@ -45,7 +45,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const result = await response.json();
   if (response.status === 201) {
     session.set("credentials", { accessToken: result.access_token });
-    return redirect("/app", {
+    return redirect("/app/profile", {
       headers: {
         "Set-Cookie": await commitSession(session),
       },
