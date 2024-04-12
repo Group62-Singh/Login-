@@ -51,6 +51,13 @@ export class UsersService {
       { id: _user.profile.id },
       payload,
     );
+
+    // const _updatedUser = await this.userRepository.update(
+    //   { username: user.username },
+    //   { firstLogin: false },
+    // );
+
+    // if (_profile.affected === 0 || _updatedUser.affected === 0) {
     if (_profile.affected === 0) {
       throw new BadRequestException();
     }
