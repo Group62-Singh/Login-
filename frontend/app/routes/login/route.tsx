@@ -82,7 +82,7 @@ export default function Index() {
         form.setFieldError(field, message);
       }
     }
-  }, []);
+  }, [fetcher.data]);
 
   return (
     <Container size={420} my={40}>

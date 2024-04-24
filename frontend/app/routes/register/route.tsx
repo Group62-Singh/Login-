@@ -14,10 +14,12 @@ import { useForm } from "@mantine/form";
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
+  json,
   redirect,
 } from "@remix-run/node";
-import { useFetcher, Form, Link } from "@remix-run/react";
+import { useFetcher, Form, Link, useNavigate } from "@remix-run/react";
 import { useEffect } from "react";
+import { isAuthenticated } from "../../utils/isAuthenticated";
 
 type FormValues = {
   username: string;
@@ -25,8 +27,12 @@ type FormValues = {
   repeatedPassword: string;
 };
 
-export async function loader(args: LoaderFunctionArgs) {
-  return {};
+export async function loader({ request }: LoaderFunctionArgs) {
+  const auth = await isAuthenticated(request);
+  if (auth && auth.user) {
+    return redirect("/app");
+  }
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -42,16 +48,16 @@ export async function action({ request }: ActionFunctionArgs) {
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" },
   });
-  if (response.status === 201) {
-    return redirect("/login", {
-      status: 200,
-    });
+  if (response.status === 409) {
+    const result = await response.json();
+    return {
+      message: result.message,
+      fields: ["username"],
+    };
   }
-  const result = await response.json();
-  return {
-    message: result.message,
-    fields: ["username"],
-  };
+  return json({
+    status: response.status,
+  });
 }
 
 export default function Index() {
@@ -64,6 +70,7 @@ export default function Index() {
   });
 
   const fetcher = useFetcher<typeof action>();
+  const navigate = useNavigate();
 
   const handleSubmit = (values: FormValues) => {
     fetcher.submit(values, {
@@ -73,14 +80,21 @@ export default function Index() {
   };
 
   useEffect(() => {
-    form.clearErrors();
+    if (
+      fetcher.data &&
+      "status" in fetcher.data &&
+      fetcher.data.status === 201
+    ) {
+      navigate("/login", { replace: true });
+    }
     if (fetcher.data && "message" in fetcher.data) {
+      form.clearErrors();
       const { message, fields } = fetcher.data;
       for (const field of fields) {
         form.setFieldError(field, message);
       }
     }
-  }, []);
+  }, [fetcher.data]);
 
   return (
     <Container size={420} my={40}>

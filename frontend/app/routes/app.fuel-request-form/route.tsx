@@ -102,9 +102,9 @@ export default function Index() {
       const locationFactor = data?.state === "TX" ? 0.02 : 0.04;
       const historyFactor = data?.history.length == 0 ? 0.0 : 0.01;
 
-      console.log(
-        `CF: ${companyProfitFactor}, GR: ${gallonsRequestedFactor}, SF:${locationFactor}, HF ${historyFactor}`
-      );
+      // console.log(
+      //   `CF: ${companyProfitFactor}, GR: ${gallonsRequestedFactor}, SF:${locationFactor}, HF ${historyFactor}`
+      // );
 
       const margin =
         pricePerGallon *
