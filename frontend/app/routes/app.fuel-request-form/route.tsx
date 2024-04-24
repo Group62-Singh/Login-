@@ -39,9 +39,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
       Authorization: `Bearer ${user.accessToken}`,
     },
   });
+  const response2 = await fetch("http://localhost:3000/fuel-requests", {
+    headers: {
+      Authorization: `Bearer ${user.accessToken}`,
+    },
+  });
+  //console.log(response2);
   const result = await response.json();
+  const result2: {
+    gallons: number;
+    deliveryAddress: string;
+    deliveryDate: Date;
+    price: number;
+  }[] = await response2.json();
   return {
     deliveryAddress: `${result.address1 ?? result.address2}, ${result.city}, ${result.state} ${result.zipCode}`,
+    state: result.state,
+    history: result2,
   };
 }
 
@@ -77,18 +91,40 @@ export default function Index() {
       gallonsRequested: 0,
       deliveryAddress: data?.deliveryAddress,
       deliveryDate: new Date(),
-      suggestedPrice: 10,
+      suggestedPrice: 0,
       totalAmountDue: 0,
     },
     onValuesChange(values, prev) {
+      const pricePerGallon = 1.5;
+      const companyProfitFactor = 0.1;
+      const gallonsRequestedFactor =
+        values.gallonsRequested > 1000 ? 0.02 : 0.03;
+      const locationFactor = data?.state === "TX" ? 0.02 : 0.04;
+      const historyFactor = data?.history.length == 0 ? 0.0 : 0.01;
+
+      console.log(
+        `CF: ${companyProfitFactor}, GR: ${gallonsRequestedFactor}, SF:${locationFactor}, HF ${historyFactor}`
+      );
+
+      const margin =
+        pricePerGallon *
+        (locationFactor -
+          historyFactor +
+          gallonsRequestedFactor +
+          companyProfitFactor);
+      const estimatedPrice = pricePerGallon + margin;
+      const es = Math.round((estimatedPrice + Number.EPSILON) * 100) / 100;
+
       if (
         values.gallonsRequested !== prev.gallonsRequested ||
         values.suggestedPrice !== prev.suggestedPrice
       ) {
-        form.setFieldValue(
-          "totalAmountDue",
-          values.suggestedPrice * values.gallonsRequested
-        );
+        const es2 =
+          Math.round(
+            (estimatedPrice * values.gallonsRequested + Number.EPSILON) * 100
+          ) / 100;
+        form.setFieldValue("totalAmountDue", es2);
+        form.setFieldValue("suggestedPrice", es);
       }
     },
   });
@@ -150,7 +186,7 @@ export default function Index() {
           />
         </Grid.Col>
         <Grid.Col span={6}>
-          <NumberInput
+          <TextInput
             label="Suggested price"
             placeholder="Suggested price"
             disabled
@@ -159,7 +195,7 @@ export default function Index() {
           />
         </Grid.Col>
         <Grid.Col span={6}>
-          <NumberInput
+          <TextInput
             label="Total amount due"
             placeholder="Total amount due"
             disabled
