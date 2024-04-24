@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { isAuthenticated } from "~/utils/isAuthenticated";
-import { destroySession } from "~/session.server";
+import { isAuthenticated } from "../../utils/isAuthenticated";
+import { destroySession } from "../../session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { session } = await isAuthenticated(request);
