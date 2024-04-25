@@ -13,8 +13,10 @@ export class AuthService {
     this.usersService.addUser({ username, password });
   }
 
-  async signIn(username: string, pass: string): Promise<any> {
+  async signIn(username: string, pass: string) /*: Promise<any>*/ {
     const user = await this.usersService.findOne(username);
+    console.log(this.usersService);
+    console.log(user);
     if (!user || !bcrypt.compareSync(pass, user.password)) {
       throw new UnauthorizedException('incorrect username or password');
     }
